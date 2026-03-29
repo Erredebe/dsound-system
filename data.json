@@ -19,6 +19,12 @@
     "intro": "Dub, retranca y bajos gordos para ponerle ritmo al desastre.",
     "songs": [
       {
+        "order": 11,
+        "title": "VoiceOver del Infierno",
+        "embedUrl": "https://suno.com/embed/d40a498e-96ba-4ba8-a488-0df50664a5eb",
+        "lyrics": "[Intro - Coro oscuro]\nOooh... aaaaah...\nbugus eternus...\nfocus perdidus...\n\n[Verso 1 - Solo con flow]\nTodo iba fino, todo en su sitio,\ncodigo limpio, casi bendito,\npero en iOS algo hizo clic...\ny ahora ni el foco sabe donde ir.\n\nLo pruebas una, lo pruebas dos,\ncada intento va peor que el anterior,\nlo que ayer era pura precision...\nhoy es caos sin explicacion.\n\n[Coro - gregoriano con ritmo]\nVoiceOver... VoiceOver...\nno responde, no hay control...\nsi navegas con teclado...\npreparate pa'l terror.\n\nVoiceOver... VoiceOver...\nesto es puro descontrol...\ncomo en tiempos oscuros...\nde Internet Explorer, por favor...\n\n[Verso 2 - mas afilado]\nEl foco salta sin direccion,\nde boton a nada sin transicion,\naria-label pierde valor...\ny el lector ignora toda intencion.\n\nSwipes que van, swipes que no,\ngestos que cambian sin razon,\nintentas seguir la especificacion...\npero Safari dice \"aqui mando yo\".\n\n[Coro - mas potente]\nVoiceOver... VoiceOver...\nme tienes hasta el cabron...\ntodo roto, todo loco...\nni una puta interaccion.\n\n[Puente - ritmo repetitivo dub/gregoriano]\ntabindex... no esta...\nel foco... se va...\nel QA... flipa ya...\ny nadie sabe arreglar...\n\n[Verso 3 - satira con flow]\nSigues el estandar, todo legal,\npero en iOS nada es igual,\nlo que en Chrome funciona brutal...\naqui se rompe sin avisar.\n\nHoras perdidas, debug sin fin,\npruebas y pruebas pa' sobrevivir,\ny cuando crees que ya esta aqui...\ncambia otra vez... vuelta a sufrir.\n\n[Coro Final - epico y pegadizo]\nVoiceOver... VoiceOver...\nmaldito bucle infernal...\nesto no es accesibilidad...\nesto es castigo digital.\n\nVoiceOver... VoiceOver...\nescucha esta oracion...\ndanos foco, danos orden...\no arde todo en produccion!\n\n[Outro - susurro coral]\nIE murio...\n...pero volvio...\nen iOS...\n...resucito..."
+      },
+      {
         "order": 8,
         "title": "The Boss",
         "embedUrl": "https://suno.com/embed/87c1190c-1e2e-43fe-9b31-faab40aa626f",

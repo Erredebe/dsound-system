@@ -24,3 +24,13 @@
 - Las canciones pueden usar lenguaje de empresa, pero transformado en algo divertido, exagerado y musical.
 - Evitar tono corporativo serio o explicaciones excesivamente tecnicas en el contenido visible de la web.
 - Cuando se escriban letras, descripciones o titulares, priorizar personalidad, ritmo y humor.
+
+## Flujo cuando el usuario pasa una cancion de Suno
+
+- Si el usuario comparte un link de Suno y dice algo como `haz como con el resto`, hay que anadir la cancion en `data.json` dentro de `music.songs`.
+- Hay que sacar el `title` y el `embedUrl` reales de Suno. El `embedUrl` debe guardarse con formato `https://suno.com/embed/<id>`.
+- La cancion debe colocarse al final usando un `order` mayor que el de las demas canciones, salvo que el usuario pida otra posicion.
+- Si la letra viene en el mensaje del usuario, hay que guardarla en `lyrics` con saltos de linea escapados y formato consistente con el resto del JSON.
+- Si la letra no esta disponible, se deja `lyrics` vacio en lugar de inventarla.
+- No hay que reescribir ni "mejorar" la letra automaticamente. Solo normalizar lo necesario para que el JSON sea valido y consistente.
+- Despues del cambio, conviene confirmar en la respuesta que se ha anadido la cancion, indicar el archivo tocado y mencionar si la letra se ha incluido o se ha dejado vacia.
