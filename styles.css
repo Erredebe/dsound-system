@@ -534,8 +534,11 @@ p {
   top: 50%;
   left: 50%;
   z-index: 30;
+  display: grid;
+  gap: 1rem;
   width: min(880px, calc(100vw - 2rem));
   max-height: min(88vh, 860px);
+  margin: 0;
   padding: 1rem 1.5rem 1.5rem;
   border-color: rgba(229, 187, 116, 0.18);
   background:
@@ -545,6 +548,8 @@ p {
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.58);
   transform: translate(-50%, -50%);
   overflow: auto;
+  opacity: 1;
+  visibility: visible;
 }
 
 .song-card.is-modal-open .song-top {
