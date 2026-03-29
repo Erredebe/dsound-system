@@ -4,6 +4,8 @@ const songModalTitleTag = document.getElementById('song-modal-title-tag');
 const songModalTitle = document.getElementById('song-modal-title');
 const songModalEmbed = document.getElementById('song-modal-embed');
 const songModalLyrics = document.getElementById('song-modal-lyrics');
+let activeSongEmbedFrame = null;
+let activeSongIframe = null;
 
 const createSongIframe = (song) => {
   const iframe = document.createElement('iframe');
@@ -19,15 +21,31 @@ const createSongIframe = (song) => {
   return iframe;
 };
 
-const openSongModal = (song) => {
+const restoreSongEmbed = () => {
+  if (activeSongEmbedFrame && activeSongIframe) {
+    activeSongEmbedFrame.replaceChildren(activeSongIframe);
+  }
+
+  activeSongEmbedFrame = null;
+  activeSongIframe = null;
+};
+
+const openSongModal = (song, embedFrame) => {
   if (!songModal) {
     return;
   }
 
+  restoreSongEmbed();
+
+  activeSongEmbedFrame = embedFrame;
+  activeSongIframe = embedFrame.querySelector('iframe');
+
   document.body.classList.add('modal-open');
   songModalTitleTag.textContent = 'Tema';
   songModalTitle.textContent = song.title;
-  songModalEmbed.replaceChildren(createSongIframe(song));
+  if (activeSongIframe) {
+    songModalEmbed.replaceChildren(activeSongIframe);
+  }
   songModalLyrics.textContent = song.lyrics;
   songModal.showModal();
 };
@@ -52,6 +70,7 @@ const setupSongModal = () => {
 
   songModal.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
+    restoreSongEmbed();
     songModalEmbed.replaceChildren();
   });
 };
@@ -125,7 +144,7 @@ const createSongCard = (song, index) => {
     toggle.textContent = 'Ver mas';
 
     toggle.addEventListener('click', () => {
-      openSongModal(song);
+      openSongModal(song, embedFrame);
     });
 
     article.appendChild(toggle);
