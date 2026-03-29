@@ -367,7 +367,7 @@ const populateIndexPage = (data, songs) => {
   if (heroShare) {
     heroShare.replaceChildren(
       createShareBlock({
-        title: `${data.site.brand} | Canciones con humor de oficina`,
+        title: `${data.site.brand} | DS Sound Dub`,
         url: getIndexUrl(),
       })
     );
