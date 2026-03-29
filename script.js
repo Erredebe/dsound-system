@@ -1,11 +1,7 @@
 const navLinks = document.querySelectorAll('.site-nav a');
-const songModal = document.getElementById('song-modal');
-const songModalTitleTag = document.getElementById('song-modal-title-tag');
-const songModalTitle = document.getElementById('song-modal-title');
-const songModalEmbed = document.getElementById('song-modal-embed');
-const songModalLyrics = document.getElementById('song-modal-lyrics');
-let activeSongEmbedFrame = null;
-let activeSongIframe = null;
+const songModalBackdrop = document.getElementById('song-modal-backdrop');
+let activeSongCard = null;
+let activeSongToggle = null;
 
 const createSongIframe = (song) => {
   const iframe = document.createElement('iframe');
@@ -21,57 +17,86 @@ const createSongIframe = (song) => {
   return iframe;
 };
 
-const restoreSongEmbed = () => {
-  if (activeSongEmbedFrame && activeSongIframe) {
-    activeSongEmbedFrame.replaceChildren(activeSongIframe);
-  }
-
-  activeSongEmbedFrame = null;
-  activeSongIframe = null;
-};
-
-const openSongModal = (song, embedFrame) => {
-  if (!songModal) {
+const closeSongModal = () => {
+  if (!activeSongCard) {
     return;
   }
 
-  restoreSongEmbed();
+  activeSongCard.classList.remove('is-modal-open');
+  activeSongCard.removeAttribute('aria-modal');
+  activeSongCard.removeAttribute('role');
 
-  activeSongEmbedFrame = embedFrame;
-  activeSongIframe = embedFrame.querySelector('iframe');
+  const closeButton = activeSongCard.querySelector('.song-card-close');
+  const lyrics = activeSongCard.querySelector('.song-lyrics');
+
+  if (closeButton) {
+    closeButton.hidden = true;
+  }
+
+  if (lyrics) {
+    lyrics.hidden = true;
+  }
+
+  if (activeSongToggle) {
+    activeSongToggle.hidden = false;
+    activeSongToggle.focus();
+  }
+
+  if (songModalBackdrop) {
+    songModalBackdrop.hidden = true;
+  }
+
+  document.body.classList.remove('modal-open');
+  activeSongCard = null;
+  activeSongToggle = null;
+};
+
+const openSongModal = (card, toggleButton) => {
+  closeSongModal();
+
+  activeSongCard = card;
+  activeSongToggle = toggleButton;
+
+  const closeButton = card.querySelector('.song-card-close');
+  const lyrics = card.querySelector('.song-lyrics');
 
   document.body.classList.add('modal-open');
-  songModalTitleTag.textContent = 'Tema';
-  songModalTitle.textContent = song.title;
-  if (activeSongIframe) {
-    songModalEmbed.replaceChildren(activeSongIframe);
+
+  if (songModalBackdrop) {
+    songModalBackdrop.hidden = false;
   }
-  songModalLyrics.textContent = song.lyrics;
-  songModal.showModal();
+
+  card.classList.add('is-modal-open');
+  card.setAttribute('role', 'dialog');
+  card.setAttribute('aria-modal', 'true');
+
+  if (toggleButton) {
+    toggleButton.hidden = true;
+  }
+
+  if (lyrics) {
+    lyrics.hidden = false;
+  }
+
+  if (closeButton) {
+    closeButton.hidden = false;
+    closeButton.focus();
+  }
 };
 
 const setupSongModal = () => {
-  if (!songModal) {
+  if (!songModalBackdrop) {
     return;
   }
 
-  songModal.addEventListener('click', (event) => {
-    const bounds = songModal.getBoundingClientRect();
-    const isBackdropClick =
-      event.clientX < bounds.left ||
-      event.clientX > bounds.right ||
-      event.clientY < bounds.top ||
-      event.clientY > bounds.bottom;
-
-    if (isBackdropClick) {
-      songModal.close();
-    }
+  songModalBackdrop.addEventListener('click', () => {
+    closeSongModal();
   });
 
-  songModal.addEventListener('close', () => {
-    document.body.classList.remove('modal-open');
-    restoreSongEmbed();
-    songModalEmbed.replaceChildren();
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && activeSongCard) {
+      closeSongModal();
+    }
   });
 };
 
@@ -138,16 +163,31 @@ const createSongCard = (song, index) => {
   article.appendChild(top);
 
   if (song.lyrics) {
+    const closeButton = document.createElement('button');
+    closeButton.className = 'song-modal-close song-card-close';
+    closeButton.type = 'button';
+    closeButton.textContent = 'Cerrar';
+    closeButton.hidden = true;
+
     const toggle = document.createElement('button');
     toggle.className = 'button button-secondary lyrics-toggle';
     toggle.type = 'button';
     toggle.textContent = 'Ver mas';
 
-    toggle.addEventListener('click', () => {
-      openSongModal(song, embedFrame);
+    const lyrics = document.createElement('pre');
+    lyrics.className = 'song-lyrics';
+    lyrics.hidden = true;
+    lyrics.textContent = song.lyrics;
+
+    closeButton.addEventListener('click', () => {
+      closeSongModal();
     });
 
-    article.appendChild(toggle);
+    toggle.addEventListener('click', () => {
+      openSongModal(article, toggle);
+    });
+
+    article.append(closeButton, toggle, lyrics);
   }
 
   return article;
