@@ -279,6 +279,53 @@ const setupSongsMenu = () => {
   });
 };
 
+const setupParallaxEffects = () => {
+  const root = document.documentElement;
+  const hero = document.querySelector('.hero');
+  const heroImageFrame = document.querySelector('.hero-image-frame');
+  let ticking = false;
+
+  const updateScrollEffects = () => {
+    ticking = false;
+
+    const scrollY = window.scrollY;
+    const heroHeight = hero ? Math.max(hero.offsetHeight, 1) : window.innerHeight;
+    const progress = Math.min(scrollY / heroHeight, 1.2);
+
+    root.style.setProperty('--scroll-y', `${scrollY}`);
+    root.style.setProperty('--hero-progress', progress.toFixed(3));
+    document.body.classList.toggle('is-scrolled', scrollY > 16);
+  };
+
+  const requestTick = () => {
+    if (ticking) {
+      return;
+    }
+
+    ticking = true;
+    window.requestAnimationFrame(updateScrollEffects);
+  };
+
+  updateScrollEffects();
+  window.addEventListener('scroll', requestTick, { passive: true });
+
+  if (!heroImageFrame || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  window.addEventListener(
+    'mousemove',
+    (event) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 2;
+      const y = (event.clientY / window.innerHeight - 0.5) * 2;
+
+      root.style.setProperty('--pointer-x', x.toFixed(3));
+      root.style.setProperty('--pointer-y', y.toFixed(3));
+    },
+    { passive: true }
+  );
+};
+
 const createSongCard = (song, index, options = {}) => {
   const { selectedSlug = '', isolated = false, totalSongs = 0, previousSong = null, nextSong = null } = options;
   const article = document.createElement('article');
@@ -293,6 +340,10 @@ const createSongCard = (song, index, options = {}) => {
   const shell = document.createElement('div');
   shell.className = 'song-card-shell';
 
+  if (isolated) {
+    shell.classList.add('song-card-shell-detail');
+  }
+
   const top = document.createElement('div');
   top.className = 'song-top';
 
@@ -304,19 +355,32 @@ const createSongCard = (song, index, options = {}) => {
   embedFrame.className = 'embed-frame';
   embedFrame.appendChild(createSongIframe(song));
 
-  top.append(title, embedFrame);
-  shell.appendChild(top);
-  shell.appendChild(
-    createShareBlock({
-      title: `${song.title} | Dsound-System`,
-      url: getSongPageUrl(song.slug),
-      compact: true,
-      iconOnly: true,
-    })
-  );
+  const shareBlock = createShareBlock({
+    title: `${song.title} | Dsound-System`,
+    url: getSongPageUrl(song.slug),
+    compact: true,
+    iconOnly: true,
+  });
 
-  if (isolated && previousSong && nextSong) {
-    shell.appendChild(createSongNavigator(previousSong, nextSong));
+  if (isolated) {
+    const sidebar = document.createElement('aside');
+    sidebar.className = 'song-detail-sidebar';
+
+    const body = document.createElement('div');
+    body.className = 'song-detail-body';
+
+    sidebar.append(title, shareBlock);
+
+    if (previousSong && nextSong) {
+      sidebar.appendChild(createSongNavigator(previousSong, nextSong));
+    }
+
+    body.appendChild(embedFrame);
+    shell.append(sidebar, body);
+  } else {
+    top.append(title, embedFrame);
+    shell.appendChild(top);
+    shell.appendChild(shareBlock);
   }
 
   if (song.lyrics) {
@@ -332,7 +396,7 @@ const createSongCard = (song, index, options = {}) => {
       lyricsHeading.className = 'lyrics-heading';
       lyricsHeading.textContent = 'Letra completa';
 
-      shell.append(lyricsHeading, lyrics);
+      shell.querySelector('.song-detail-body')?.append(lyricsHeading, lyrics);
     } else {
       const toggle = document.createElement('button');
       toggle.className = 'button button-secondary lyrics-toggle';
@@ -495,6 +559,7 @@ const init = async () => {
     setupRevealAnimations();
     setupActiveNav();
     setupSongsMenu();
+    setupParallaxEffects();
   } catch (error) {
     console.error(error);
     renderErrorState();
