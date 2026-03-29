@@ -1,8 +1,4 @@
 const navLinks = document.querySelectorAll('.site-nav a');
-const songModalBackdrop = document.getElementById('song-modal-backdrop');
-let activeSongCard = null;
-let activeSongToggle = null;
-
 const createSongIframe = (song) => {
   const iframe = document.createElement('iframe');
   iframe.width = '100%';
@@ -15,89 +11,6 @@ const createSongIframe = (song) => {
   iframe.src = song.embedUrl;
   iframe.title = `${song.title} by Dsound-System`;
   return iframe;
-};
-
-const closeSongModal = () => {
-  if (!activeSongCard) {
-    return;
-  }
-
-  activeSongCard.classList.remove('is-modal-open');
-  activeSongCard.removeAttribute('aria-modal');
-  activeSongCard.removeAttribute('role');
-
-  const closeButton = activeSongCard.querySelector('.song-card-close');
-  const lyrics = activeSongCard.querySelector('.song-lyrics');
-
-  if (closeButton) {
-    closeButton.hidden = true;
-  }
-
-  if (lyrics) {
-    lyrics.hidden = true;
-  }
-
-  if (activeSongToggle) {
-    activeSongToggle.hidden = false;
-    activeSongToggle.focus();
-  }
-
-  if (songModalBackdrop) {
-    songModalBackdrop.hidden = true;
-  }
-
-  document.body.classList.remove('modal-open');
-  activeSongCard = null;
-  activeSongToggle = null;
-};
-
-const openSongModal = (card, toggleButton) => {
-  closeSongModal();
-
-  activeSongCard = card;
-  activeSongToggle = toggleButton;
-
-  const closeButton = card.querySelector('.song-card-close');
-  const lyrics = card.querySelector('.song-lyrics');
-
-  document.body.classList.add('modal-open');
-
-  if (songModalBackdrop) {
-    songModalBackdrop.hidden = false;
-  }
-
-  card.classList.add('is-modal-open');
-  card.setAttribute('role', 'dialog');
-  card.setAttribute('aria-modal', 'true');
-
-  if (toggleButton) {
-    toggleButton.hidden = true;
-  }
-
-  if (lyrics) {
-    lyrics.hidden = false;
-  }
-
-  if (closeButton) {
-    closeButton.hidden = false;
-    closeButton.focus();
-  }
-};
-
-const setupSongModal = () => {
-  if (!songModalBackdrop) {
-    return;
-  }
-
-  songModalBackdrop.addEventListener('click', () => {
-    closeSongModal();
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && activeSongCard) {
-      closeSongModal();
-    }
-  });
 };
 
 const setupRevealAnimations = () => {
@@ -148,6 +61,9 @@ const createSongCard = (song, index) => {
   const delayClass = index === 0 ? '' : ` delay-${Math.min(index, 2)}`;
   article.className = `embed-card song-card reveal${delayClass}`;
 
+  const shell = document.createElement('div');
+  shell.className = 'song-card-shell';
+
   const top = document.createElement('div');
   top.className = 'song-top';
 
@@ -160,35 +76,32 @@ const createSongCard = (song, index) => {
   embedFrame.appendChild(createSongIframe(song));
 
   top.append(titleTag, embedFrame);
-  article.appendChild(top);
+  shell.appendChild(top);
 
   if (song.lyrics) {
-    const closeButton = document.createElement('button');
-    closeButton.className = 'song-modal-close song-card-close';
-    closeButton.type = 'button';
-    closeButton.textContent = 'Cerrar';
-    closeButton.hidden = true;
-
     const toggle = document.createElement('button');
     toggle.className = 'button button-secondary lyrics-toggle';
     toggle.type = 'button';
     toggle.textContent = 'Ver mas';
+    toggle.setAttribute('aria-expanded', 'false');
 
     const lyrics = document.createElement('pre');
     lyrics.className = 'song-lyrics';
     lyrics.hidden = true;
     lyrics.textContent = song.lyrics;
 
-    closeButton.addEventListener('click', () => {
-      closeSongModal();
-    });
-
     toggle.addEventListener('click', () => {
-      openSongModal(article, toggle);
+      const isOpen = !lyrics.hidden;
+      lyrics.hidden = isOpen;
+      article.classList.toggle('is-expanded', !isOpen);
+      toggle.textContent = isOpen ? 'Ver mas' : 'Ver menos';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
     });
 
-    article.append(closeButton, toggle, lyrics);
+    shell.append(toggle, lyrics);
   }
+
+  article.appendChild(shell);
 
   return article;
 };
@@ -234,7 +147,6 @@ const init = async () => {
     populatePage(data);
     setupRevealAnimations();
     setupActiveNav();
-    setupSongModal();
   } catch (error) {
     console.error(error);
     const songsGrid = document.getElementById('songs-grid');
