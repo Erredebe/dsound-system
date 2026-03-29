@@ -5,13 +5,8 @@ const songsMenuToggle = document.getElementById('songs-menu-toggle');
 const songsMenuList = document.getElementById('songs-menu-list');
 const heroShare = document.getElementById('hero-share');
 const heroMeta = document.getElementById('hero-meta');
-const featureTitle = document.getElementById('feature-title');
-const featureText = document.getElementById('feature-text');
-const featurePoints = document.getElementById('feature-points');
-const featuredSong = document.getElementById('featured-song');
 const musicTitle = document.getElementById('music-title');
 const musicIntro = document.getElementById('music-intro');
-const releaseNotes = document.getElementById('release-notes');
 
 const shareIcons = {
   X: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 3H21l-4.59 5.24L21.8 21h-4.23l-3.31-4.83L9.98 21H7.87l4.91-5.61L2.2 3h4.34l2.99 4.36L13.35 3h2.11l-4.37 4.99L18.9 3Zm-1.48 16h1.17L6.45 4.9H5.19L17.42 19Z" fill="currentColor"/></svg>',
@@ -174,21 +169,6 @@ const createMetaPill = (text) => {
   return pill;
 };
 
-const createInfoNote = (label, text) => {
-  const item = document.createElement('article');
-  item.className = 'editorial-card editorial-card-compact';
-
-  const tag = document.createElement('span');
-  tag.className = 'media-tag';
-  tag.textContent = label;
-
-  const paragraph = document.createElement('p');
-  paragraph.textContent = text;
-
-  item.append(tag, paragraph);
-  return item;
-};
-
 const setupRevealAnimations = () => {
   const revealItems = document.querySelectorAll('.reveal');
 
@@ -277,10 +257,10 @@ const setupSongsMenu = () => {
 };
 
 const createSongCard = (song, index, options = {}) => {
-  const { selectedSlug = '', isolated = false, totalSongs = 0, featured = false } = options;
+  const { selectedSlug = '', isolated = false, totalSongs = 0 } = options;
   const article = document.createElement('article');
   const delayClass = index === 0 ? '' : ` delay-${Math.min(index, 2)}`;
-  article.className = `embed-card song-card reveal${delayClass}${isolated ? ' song-card-detail' : ''}${featured ? ' song-card-featured' : ''}`;
+  article.className = `embed-card song-card reveal${delayClass}${isolated ? ' song-card-detail' : ''}`;
   article.id = `song-${song.slug}`;
 
   if (song.slug === selectedSlug) {
@@ -407,8 +387,6 @@ const renderMenuLinks = (songs, selectedSlug) => {
 };
 
 const populateIndexPage = (data, songs) => {
-  const leadSong = songs[0];
-
   document.title = data.site.title;
   document.querySelector('meta[name="description"]')?.setAttribute('content', data.site.description);
   document.getElementById('hero-eyebrow').textContent = data.hero.eyebrow;
@@ -439,27 +417,6 @@ const populateIndexPage = (data, songs) => {
   }
   if (musicIntro) {
     musicIntro.textContent = data.music.intro;
-  }
-
-  if (featureTitle) {
-    featureTitle.textContent = leadSong.title;
-  }
-
-  if (featureText) {
-    featureText.textContent =
-      'El lanzamiento que mejor resume la idea del proyecto: identidad de banda, letra con personalidad y un enlace propio listo para compartir.';
-  }
-
-  if (featurePoints) {
-    featurePoints.replaceChildren(
-      createInfoNote('Curaduria', 'Una portada editorial antes del catalogo para que la web respire como la home de un grupo profesional.'),
-      createInfoNote('Enlace propio', 'Cada cancion se puede abrir aislada y compartir como si fuera un single independiente dentro del universo DS.'),
-      createInfoNote('Presentacion', 'La interfaz prioriza imagen, discografia y narrativa musical por encima del efecto de demo o listado tecnico.')
-    );
-  }
-
-  if (featuredSong) {
-    featuredSong.replaceChildren(createSongCard(leadSong, 0, { totalSongs: songs.length, featured: true }));
   }
 
   const songsGrid = document.getElementById('songs-grid');
@@ -505,14 +462,6 @@ const populateSongPage = (data, songs) => {
   }
   if (musicIntro) {
     musicIntro.textContent = 'La pieza se presenta en formato individual para que funcione como lanzamiento, no solo como item dentro de una parrilla.';
-  }
-
-  if (releaseNotes) {
-    releaseNotes.replaceChildren(
-      createInfoNote('Pagina propia', 'Cada tema cuenta con su propia URL para compartirlo como single aislado sin pasar antes por el index.'),
-      createInfoNote('Catalogo', `Forma parte de una discografia de ${songs.length} canciones conectadas por una misma identidad visual y narrativa.`),
-      createInfoNote('Uso recomendado', 'Ideal para compartir un tema concreto en redes, mensajeria o presentaciones sin mezclarlo con el resto del repertorio.')
-    );
   }
 
   const songsGrid = document.getElementById('songs-grid');
