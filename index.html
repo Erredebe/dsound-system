@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dsound-System | Dub & Reggae</title>
+  <meta name="description" content="Dsound-System mezcla bajos profundos, textura dub y energia de directo en una experiencia organica y envolvente.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#inicio" id="brand-link">Dsound-System</a>
+      <nav class="site-nav" aria-label="Principal">
+        <a href="#musica">Musica</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section" id="inicio">
+        <div class="hero-copy reveal">
+          <p class="eyebrow" id="hero-eyebrow"></p>
+          <h1 id="hero-title"></h1>
+          <p class="hero-text" id="hero-text"></p>
+          <div class="hero-actions">
+            <a class="button button-primary" id="hero-primary-cta" href="#musica">Escuchar</a>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal delay-1">
+          <div class="hero-image-frame">
+            <img src="assets/foto01_grupo.png" alt="Dsound-System" class="hero-image">
+          </div>
+        </div>
+      </section>
+
+      <section class="section music-focus" id="musica">
+        <div class="section-heading reveal">
+          <p class="eyebrow" id="music-eyebrow"></p>
+        </div>
+
+        <div class="songs-grid" id="songs-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
