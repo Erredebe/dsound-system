@@ -34,3 +34,8 @@
 - Si la letra no esta disponible, se deja `lyrics` vacio en lugar de inventarla.
 - No hay que reescribir ni "mejorar" la letra automaticamente. Solo normalizar lo necesario para que el JSON sea valido y consistente.
 - Despues del cambio, conviene confirmar en la respuesta que se ha anadido la cancion, indicar el archivo tocado y mencionar si la letra se ha incluido o se ha dejado vacia.
+
+## Despliegue y pruebas
+
+- Cada push a la rama `main` despliega automaticamente la web en `https://dsound-system.netlify.app/`.
+- Una vez desplegado, las comprobaciones funcionales y visuales se pueden hacer directamente sobre esa URL usando el MCP de Playwright.
