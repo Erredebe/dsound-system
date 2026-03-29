@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dsound-System | Dub & Reggae</title>
-  <meta name="description" content="Dsound-System mezcla bajos profundos, textura dub y energia de directo en una experiencia organica y envolvente.">
+  <title>Dsound-System | Cancion</title>
+  <meta name="description" content="Escucha una cancion aislada de Dsound-System y compartela en redes.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body data-page="index">
+<body data-page="song">
   <div class="page-shell">
     <div class="ambient ambient-left"></div>
     <div class="ambient ambient-right"></div>
 
     <header class="site-header">
-      <a class="brand" href="#inicio" id="brand-link">Dsound-System</a>
+      <a class="brand" href="index.html" id="brand-link">Dsound-System</a>
       <nav class="site-nav" aria-label="Principal">
-        <a href="#musica">Musica</a>
+        <a href="index.html#musica">Musica</a>
         <div class="songs-menu" id="songs-menu">
           <button
             class="button button-secondary menu-toggle"
@@ -35,13 +35,13 @@
     </header>
 
     <main>
-      <section class="hero section" id="inicio">
+      <section class="hero section song-hero" id="inicio">
         <div class="hero-copy reveal">
           <p class="eyebrow" id="hero-eyebrow"></p>
           <h1 id="hero-title"></h1>
           <p class="hero-text" id="hero-text"></p>
           <div class="hero-actions">
-            <a class="button button-primary" id="hero-primary-cta" href="#musica">Escuchar</a>
+            <a class="button button-primary" id="hero-primary-cta" href="index.html#musica">Volver al repertorio</a>
           </div>
           <div class="share-block" id="hero-share"></div>
         </div>
@@ -53,12 +53,12 @@
         </div>
       </section>
 
-      <section class="section music-focus" id="musica">
+      <section class="section music-focus song-focus" id="cancion">
         <div class="section-heading reveal">
           <p class="eyebrow" id="music-eyebrow"></p>
         </div>
 
-        <div class="songs-grid" id="songs-grid"></div>
+        <div class="songs-grid song-detail-grid" id="songs-grid"></div>
       </section>
     </main>
   </div>
