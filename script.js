@@ -4,6 +4,14 @@ const songsMenu = document.getElementById('songs-menu');
 const songsMenuToggle = document.getElementById('songs-menu-toggle');
 const songsMenuList = document.getElementById('songs-menu-list');
 const heroShare = document.getElementById('hero-share');
+const heroMeta = document.getElementById('hero-meta');
+const featureTitle = document.getElementById('feature-title');
+const featureText = document.getElementById('feature-text');
+const featurePoints = document.getElementById('feature-points');
+const featuredSong = document.getElementById('featured-song');
+const musicTitle = document.getElementById('music-title');
+const musicIntro = document.getElementById('music-intro');
+const releaseNotes = document.getElementById('release-notes');
 
 const shareIcons = {
   X: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 3H21l-4.59 5.24L21.8 21h-4.23l-3.31-4.83L9.98 21H7.87l4.91-5.61L2.2 3h4.34l2.99 4.36L13.35 3h2.11l-4.37 4.99L18.9 3Zm-1.48 16h1.17L6.45 4.9H5.19L17.42 19Z" fill="currentColor"/></svg>',
@@ -39,6 +47,7 @@ const getSongPageUrl = (slug) => getPageUrl('song.html', slug);
 const getShareLinks = ({ title, url }) => {
   const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
+  const whatsappText = encodeURIComponent(`${title}\n${url}`);
 
   return [
     {
@@ -51,7 +60,7 @@ const getShareLinks = ({ title, url }) => {
     },
     {
       label: 'WhatsApp',
-      href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
+      href: `https://api.whatsapp.com/send?text=${whatsappText}`,
     },
     {
       label: 'LinkedIn',
@@ -151,12 +160,33 @@ const createSongIframe = (song) => {
   iframe.height = '140';
   iframe.style.borderRadius = '12px';
   iframe.style.border = '0';
-  iframe.allowFullscreen = true;
   iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
   iframe.loading = 'lazy';
   iframe.src = song.embedUrl;
   iframe.title = `${song.title} by Dsound-System`;
   return iframe;
+};
+
+const createMetaPill = (text) => {
+  const pill = document.createElement('span');
+  pill.className = 'hero-meta-pill';
+  pill.textContent = text;
+  return pill;
+};
+
+const createInfoNote = (label, text) => {
+  const item = document.createElement('article');
+  item.className = 'editorial-card editorial-card-compact';
+
+  const tag = document.createElement('span');
+  tag.className = 'media-tag';
+  tag.textContent = label;
+
+  const paragraph = document.createElement('p');
+  paragraph.textContent = text;
+
+  item.append(tag, paragraph);
+  return item;
 };
 
 const setupRevealAnimations = () => {
@@ -247,10 +277,10 @@ const setupSongsMenu = () => {
 };
 
 const createSongCard = (song, index, options = {}) => {
-  const { selectedSlug = '', isolated = false } = options;
+  const { selectedSlug = '', isolated = false, totalSongs = 0, featured = false } = options;
   const article = document.createElement('article');
   const delayClass = index === 0 ? '' : ` delay-${Math.min(index, 2)}`;
-  article.className = `embed-card song-card reveal${delayClass}${isolated ? ' song-card-detail' : ''}`;
+  article.className = `embed-card song-card reveal${delayClass}${isolated ? ' song-card-detail' : ''}${featured ? ' song-card-featured' : ''}`;
   article.id = `song-${song.slug}`;
 
   if (song.slug === selectedSlug) {
@@ -265,18 +295,31 @@ const createSongCard = (song, index, options = {}) => {
 
   const titleTag = document.createElement('span');
   titleTag.className = 'media-tag';
-  titleTag.textContent = song.title;
+  titleTag.textContent = isolated ? 'Single' : `Track ${String(index + 1).padStart(2, '0')}`;
 
-  const songLink = document.createElement('a');
-  songLink.className = 'song-link';
-  songLink.href = isolated ? `${getIndexUrl()}#musica` : getSongPageUrl(song.slug);
-  songLink.hidden = true;
+  const title = document.createElement('h3');
+  title.className = 'song-card-title';
+  title.textContent = song.title;
+
+  const deck = document.createElement('p');
+  deck.className = 'song-card-deck';
+  deck.textContent = isolated
+    ? 'Pagina propia para escuchar el tema completo, leer la letra y compartirlo como single independiente.'
+    : 'Single del catalogo de Dsound-System con enlace propio para escucha y distribucion.';
+
+  const meta = document.createElement('div');
+  meta.className = 'card-meta song-card-meta';
+  meta.append(
+    createMetaPill('DS Sound Dub'),
+    createMetaPill(totalSongs ? `Catalogo ${String(index + 1).padStart(2, '0')}/${String(totalSongs).padStart(2, '0')}` : 'Catalogo'),
+    createMetaPill(isolated ? 'Pagina individual' : 'Escucha + comparte')
+  );
 
   const embedFrame = document.createElement('div');
   embedFrame.className = 'embed-frame';
   embedFrame.appendChild(createSongIframe(song));
 
-  top.append(titleTag, songLink, embedFrame);
+  top.append(titleTag, title, deck, meta, embedFrame);
   shell.appendChild(top);
   shell.appendChild(
     createShareBlock({
@@ -288,26 +331,36 @@ const createSongCard = (song, index, options = {}) => {
   );
 
   if (song.lyrics) {
-    const toggle = document.createElement('button');
-    toggle.className = 'button button-secondary lyrics-toggle';
-    toggle.type = 'button';
-    toggle.textContent = isolated ? 'Ver letra' : 'Ver mas';
-    toggle.setAttribute('aria-expanded', 'false');
-
     const lyrics = document.createElement('pre');
     lyrics.className = 'song-lyrics';
-    lyrics.hidden = true;
+    lyrics.hidden = !isolated;
     lyrics.textContent = song.lyrics;
 
-    toggle.addEventListener('click', () => {
-      const isOpen = !lyrics.hidden;
-      lyrics.hidden = isOpen;
-      article.classList.toggle('is-expanded', !isOpen);
-      toggle.textContent = isOpen ? (isolated ? 'Ver letra' : 'Ver mas') : 'Ver menos';
-      toggle.setAttribute('aria-expanded', String(!isOpen));
-    });
+    if (isolated) {
+      article.classList.add('is-expanded');
 
-    shell.append(toggle, lyrics);
+      const lyricsHeading = document.createElement('p');
+      lyricsHeading.className = 'lyrics-heading';
+      lyricsHeading.textContent = 'Letra completa';
+
+      shell.append(lyricsHeading, lyrics);
+    } else {
+      const toggle = document.createElement('button');
+      toggle.className = 'button button-secondary lyrics-toggle';
+      toggle.type = 'button';
+      toggle.textContent = 'Ver letra';
+      toggle.setAttribute('aria-expanded', 'false');
+
+      toggle.addEventListener('click', () => {
+        const isOpen = !lyrics.hidden;
+        lyrics.hidden = isOpen;
+        article.classList.toggle('is-expanded', !isOpen);
+        toggle.textContent = isOpen ? 'Ver letra' : 'Ocultar letra';
+        toggle.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      shell.append(toggle, lyrics);
+    }
   }
 
   article.appendChild(shell);
@@ -354,11 +407,18 @@ const renderMenuLinks = (songs, selectedSlug) => {
 };
 
 const populateIndexPage = (data, songs) => {
+  const leadSong = songs[0];
+
   document.title = data.site.title;
   document.querySelector('meta[name="description"]')?.setAttribute('content', data.site.description);
   document.getElementById('hero-eyebrow').textContent = data.hero.eyebrow;
   document.getElementById('hero-title').textContent = data.hero.title;
   document.getElementById('hero-text').textContent = data.hero.text;
+  heroMeta?.replaceChildren(
+    createMetaPill('Fictional Dub Collective'),
+    createMetaPill(`${songs.length} singles disponibles`),
+    createMetaPill('Catalogo con paginas propias')
+  );
 
   const primaryCta = document.getElementById('hero-primary-cta');
   primaryCta.textContent = data.hero.primaryCta.label;
@@ -374,9 +434,36 @@ const populateIndexPage = (data, songs) => {
   }
 
   document.getElementById('music-eyebrow').textContent = data.music.eyebrow;
+  if (musicTitle) {
+    musicTitle.textContent = data.music.title;
+  }
+  if (musicIntro) {
+    musicIntro.textContent = data.music.intro;
+  }
+
+  if (featureTitle) {
+    featureTitle.textContent = leadSong.title;
+  }
+
+  if (featureText) {
+    featureText.textContent =
+      'El lanzamiento que mejor resume la idea del proyecto: identidad de banda, letra con personalidad y un enlace propio listo para compartir.';
+  }
+
+  if (featurePoints) {
+    featurePoints.replaceChildren(
+      createInfoNote('Curaduria', 'Una portada editorial antes del catalogo para que la web respire como la home de un grupo profesional.'),
+      createInfoNote('Enlace propio', 'Cada cancion se puede abrir aislada y compartir como si fuera un single independiente dentro del universo DS.'),
+      createInfoNote('Presentacion', 'La interfaz prioriza imagen, discografia y narrativa musical por encima del efecto de demo o listado tecnico.')
+    );
+  }
+
+  if (featuredSong) {
+    featuredSong.replaceChildren(createSongCard(leadSong, 0, { totalSongs: songs.length, featured: true }));
+  }
 
   const songsGrid = document.getElementById('songs-grid');
-  songsGrid.replaceChildren(...songs.map((song, index) => createSongCard(song, index)));
+  songsGrid.replaceChildren(...songs.map((song, index) => createSongCard(song, index, { totalSongs: songs.length })));
   renderMenuLinks(songs, '');
 };
 
@@ -391,10 +478,16 @@ const populateSongPage = (data, songs) => {
 
   document.getElementById('hero-eyebrow').textContent = data.music.eyebrow;
   document.getElementById('hero-title').textContent = selectedSong.title;
-  document.getElementById('hero-text').textContent = data.music.intro;
+  document.getElementById('hero-text').textContent =
+    'Una pagina de single pensada para escuchar el tema con contexto, letra y enlace propio dentro del catalogo de Dsound-System.';
+  heroMeta?.replaceChildren(
+    createMetaPill('Single page'),
+    createMetaPill(`Tema ${String(songs.indexOf(selectedSong) + 1).padStart(2, '0')} del catalogo`),
+    createMetaPill('Dub satirico con enlace propio')
+  );
 
   const primaryCta = document.getElementById('hero-primary-cta');
-  primaryCta.textContent = 'Volver al repertorio';
+  primaryCta.textContent = 'Ver discografia';
   primaryCta.href = `${getIndexUrl()}#musica`;
 
   if (heroShare) {
@@ -406,10 +499,30 @@ const populateSongPage = (data, songs) => {
     );
   }
 
-  document.getElementById('music-eyebrow').textContent = 'Escucha la cancion';
+  document.getElementById('music-eyebrow').textContent = 'Single';
+  if (musicTitle) {
+    musicTitle.textContent = 'Escucha completa y letra';
+  }
+  if (musicIntro) {
+    musicIntro.textContent = 'La pieza se presenta en formato individual para que funcione como lanzamiento, no solo como item dentro de una parrilla.';
+  }
+
+  if (releaseNotes) {
+    releaseNotes.replaceChildren(
+      createInfoNote('Pagina propia', 'Cada tema cuenta con su propia URL para compartirlo como single aislado sin pasar antes por el index.'),
+      createInfoNote('Catalogo', `Forma parte de una discografia de ${songs.length} canciones conectadas por una misma identidad visual y narrativa.`),
+      createInfoNote('Uso recomendado', 'Ideal para compartir un tema concreto en redes, mensajeria o presentaciones sin mezclarlo con el resto del repertorio.')
+    );
+  }
 
   const songsGrid = document.getElementById('songs-grid');
-  songsGrid.replaceChildren(createSongCard(selectedSong, 0, { selectedSlug: selectedSong.slug, isolated: true }));
+  songsGrid.replaceChildren(
+    createSongCard(selectedSong, songs.indexOf(selectedSong), {
+      selectedSlug: selectedSong.slug,
+      isolated: true,
+      totalSongs: songs.length,
+    })
+  );
   renderMenuLinks(songs, selectedSong.slug);
 };
 

@@ -1,22 +1,22 @@
 {
   "site": {
     "title": "Dsound-System | Dub & Reggae",
-    "description": "Dsound-System mezcla dub, reggae y bass music con graves al frente, ironia callejera y pulso de soundsystem.",
+    "description": "Dsound-System presenta un catalogo de dub satirico con identidad de banda, pegada de sound system y acabado editorial.",
     "brand": "Dsound-System"
   },
   "hero": {
-    "eyebrow": "Dub / Reggae / Sound System",
-    "title": "DSOUND SYSTEM PREMOH.",
-    "text": "Dsound-System convierte tickets, choques y dramas de oficina en dub con retranca, graves gordos y pulso de soundsystem.",
+    "eyebrow": "Dub / Sound System / Catalogo",
+    "title": "DSOUND SYSTEM",
+    "text": "Un proyecto musical ficticio con presencia de banda real: dub de oficina, bajos al frente, imagen cuidada y canciones que convierten el caos digital en repertorio.",
     "primaryCta": {
-      "label": "Escuchar",
+      "label": "Explorar discografia",
       "href": "#musica"
     }
   },
   "music": {
-    "eyebrow": "Musica",
-    "title": "Canciones para bajar al barro y subir el volumen.",
-    "intro": "Dub, retranca y bajos gordos para ponerle ritmo al desastre.",
+    "eyebrow": "Discografia",
+    "title": "Singles para sonar grandes incluso cuando todo arde.",
+    "intro": "Cada lanzamiento mezcla humor interno, tension de producto y acabado de sound system en formato de single.",
     "songs": [
       {
         "order": 11,

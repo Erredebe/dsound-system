@@ -18,6 +18,8 @@
     <header class="site-header">
       <a class="brand" href="#inicio" id="brand-link">Dsound-System</a>
       <nav class="site-nav" aria-label="Principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#manifiesto">Banda</a>
         <a href="#musica">Musica</a>
         <div class="songs-menu" id="songs-menu">
           <button
@@ -40,8 +42,10 @@
           <p class="eyebrow" id="hero-eyebrow"></p>
           <h1 id="hero-title"></h1>
           <p class="hero-text" id="hero-text"></p>
+          <div class="hero-meta" id="hero-meta"></div>
           <div class="hero-actions">
             <a class="button button-primary" id="hero-primary-cta" href="#musica">Escuchar</a>
+            <a class="button button-secondary" href="#destacada">Single destacado</a>
           </div>
           <div class="share-block" id="hero-share"></div>
         </div>
@@ -53,9 +57,62 @@
         </div>
       </section>
 
+      <section class="section editorial-band" id="manifiesto">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Presentacion</p>
+          <h2>Una banda ficticia con empaque de sound system y vida propia.</h2>
+          <p>
+            Dsound-System funciona como un proyecto musical editorial: imagen de grupo, repertorio reconocible,
+            narrativa de catalogo y un universo propio donde el caos digital se convierte en dub, ironia y bajos.
+          </p>
+        </div>
+        <div class="editorial-grid reveal delay-1">
+          <article class="editorial-card">
+            <span class="media-tag">Identidad</span>
+            <h3>Code. Sound. Chaos.</h3>
+            <p>
+              La propuesta mezcla cultura sound system, humor de oficina y una direccion visual mas cercana a una
+              banda consolidada que a una demo tecnica.
+            </p>
+          </article>
+          <article class="editorial-card">
+            <span class="media-tag">Directo</span>
+            <h3>Singles con firma propia</h3>
+            <p>
+              Cada tema vive dentro de una discografia comun, pero tambien funciona como pieza individual con su
+              propia pagina, su enlace y su tono.
+            </p>
+          </article>
+          <article class="editorial-card">
+            <span class="media-tag">Tono</span>
+            <h3>Satira con acabado premium</h3>
+            <p>
+              El chiste sigue estando en las letras, no en la presentacion. La web debe sentirse como un proyecto
+              musical cuidado, no como una lista improvisada de embeds.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section feature-release" id="destacada">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Single destacado</p>
+          <h2 id="feature-title"></h2>
+          <p id="feature-text"></p>
+        </div>
+        <div class="feature-layout">
+          <div class="feature-copy reveal delay-1">
+            <div class="feature-points" id="feature-points"></div>
+          </div>
+          <div class="feature-player reveal delay-2" id="featured-song"></div>
+        </div>
+      </section>
+
       <section class="section music-focus" id="musica">
         <div class="section-heading reveal">
           <p class="eyebrow" id="music-eyebrow"></p>
+          <h2 id="music-title"></h2>
+          <p id="music-intro"></p>
         </div>
 
         <div class="songs-grid" id="songs-grid"></div>

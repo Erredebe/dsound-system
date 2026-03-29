@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dsound-System | Cancion</title>
-  <meta name="description" content="Escucha una cancion aislada de Dsound-System y compartela en redes.">
+  <title>Dsound-System | Single</title>
+  <meta name="description" content="Escucha un single de Dsound-System con su propia pagina, letra y enlaces para compartir.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
     <header class="site-header">
       <a class="brand" href="index.html" id="brand-link">Dsound-System</a>
       <nav class="site-nav" aria-label="Principal">
+        <a href="index.html#inicio">Inicio</a>
         <a href="index.html#musica">Musica</a>
         <div class="songs-menu" id="songs-menu">
           <button
@@ -40,6 +41,7 @@
           <p class="eyebrow" id="hero-eyebrow"></p>
           <h1 id="hero-title"></h1>
           <p class="hero-text" id="hero-text"></p>
+          <div class="hero-meta" id="hero-meta"></div>
           <div class="hero-actions">
             <a class="button button-primary" id="hero-primary-cta" href="index.html#musica">Volver al repertorio</a>
           </div>
@@ -56,8 +58,11 @@
       <section class="section music-focus song-focus" id="cancion">
         <div class="section-heading reveal">
           <p class="eyebrow" id="music-eyebrow"></p>
+          <h2 id="music-title"></h2>
+          <p id="music-intro"></p>
         </div>
 
+        <div class="release-notes reveal delay-1" id="release-notes"></div>
         <div class="songs-grid song-detail-grid" id="songs-grid"></div>
       </section>
     </main>
