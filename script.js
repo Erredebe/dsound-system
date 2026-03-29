@@ -404,32 +404,6 @@ const populateSongPage = (data, songs) => {
     .querySelector('meta[name="description"]')
     ?.setAttribute('content', `${selectedSong.title}. ${data.music.intro}`);
 
-  document.getElementById('hero-eyebrow').textContent = data.music.eyebrow;
-  document.getElementById('hero-title').textContent = selectedSong.title;
-  document.getElementById('hero-text').textContent = '';
-  heroMeta?.replaceChildren();
-
-  const primaryCta = document.getElementById('hero-primary-cta');
-  primaryCta.textContent = 'Ver discografia';
-  primaryCta.href = `${getIndexUrl()}#musica`;
-
-  if (heroShare) {
-    heroShare.replaceChildren(
-      createShareBlock({
-        title: `${selectedSong.title} | Dsound-System`,
-        url: getSongPageUrl(selectedSong.slug),
-      })
-    );
-  }
-
-  document.getElementById('music-eyebrow').textContent = 'Single';
-  if (musicTitle) {
-    musicTitle.textContent = '';
-  }
-  if (musicIntro) {
-    musicIntro.textContent = '';
-  }
-
   const songsGrid = document.getElementById('songs-grid');
   songsGrid.replaceChildren(
     createSongCard(selectedSong, songs.indexOf(selectedSong), {
