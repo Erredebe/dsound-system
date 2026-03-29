@@ -329,25 +329,45 @@ p {
   padding: 0.95rem 1.35rem;
   border-radius: 999px;
   border: 1px solid transparent;
+  color: var(--text);
+  font-family: "Sora", sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
+  cursor: pointer;
   transition:
     transform 180ms ease,
     border-color 180ms ease,
-    background 180ms ease;
+    background 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .button:hover {
   transform: translateY(-2px);
 }
 
+.button:focus-visible,
+.song-modal-close:focus-visible {
+  outline: 2px solid rgba(255, 232, 194, 0.9);
+  outline-offset: 3px;
+}
+
 .button-primary {
   background: linear-gradient(135deg, var(--accent) 0%, #bb6f27 100%);
   color: #160f0a;
+  box-shadow: 0 14px 30px rgba(216, 144, 60, 0.24);
 }
 
 .button-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--line);
+  background: linear-gradient(180deg, rgba(255, 244, 223, 0.14), rgba(255, 255, 255, 0.04));
+  border-color: rgba(229, 187, 116, 0.36);
+  color: #fff2de;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.button-secondary:hover {
+  background: linear-gradient(180deg, rgba(229, 187, 116, 0.24), rgba(255, 255, 255, 0.08));
+  border-color: rgba(229, 187, 116, 0.58);
 }
 
 .hero-card,
@@ -483,6 +503,70 @@ p {
 
 .lyrics-toggle {
   justify-self: start;
+}
+
+.song-modal {
+  width: min(880px, calc(100vw - 2rem));
+  max-height: min(88vh, 860px);
+  padding: 0;
+  border: 1px solid rgba(229, 187, 116, 0.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(216, 144, 60, 0.16), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    rgba(20, 14, 10, 0.98);
+  color: var(--text);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.58);
+  overflow: hidden;
+}
+
+.song-modal::backdrop {
+  background:
+    radial-gradient(circle at top, rgba(216, 144, 60, 0.14), transparent 30%),
+    rgba(5, 4, 3, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.song-modal-close-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1rem 0;
+}
+
+.song-modal-close {
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(229, 187, 116, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.song-modal-content {
+  display: grid;
+  gap: 1.25rem;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.song-modal-copy h2 {
+  margin-bottom: 0;
+  max-width: none;
+}
+
+.song-modal-embed {
+  margin-top: 0;
+}
+
+.song-modal-lyrics {
+  max-height: 44vh;
+  overflow: auto;
+  border-color: rgba(229, 187, 116, 0.14);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+body.modal-open {
+  overflow: hidden;
 }
 
 .media-card a,
@@ -692,5 +776,21 @@ p {
   .media-card,
   .show-card {
     padding: 1.25rem;
+  }
+
+  .song-modal {
+    width: min(100vw - 1rem, 100%);
+    max-height: 92vh;
+    border-radius: 22px;
+  }
+
+  .song-modal-content {
+    padding: 0 1rem 1rem;
+  }
+
+  .song-modal-lyrics {
+    max-height: 40vh;
+    padding: 0.9rem;
+    font-size: 0.94rem;
   }
 }

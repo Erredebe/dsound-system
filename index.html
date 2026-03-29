@@ -50,6 +50,20 @@
     </main>
   </div>
 
+  <dialog class="song-modal" id="song-modal" aria-labelledby="song-modal-title">
+    <form method="dialog" class="song-modal-close-row">
+      <button class="song-modal-close" type="submit" aria-label="Cerrar modal">Cerrar</button>
+    </form>
+    <div class="song-modal-content">
+      <div class="song-modal-copy">
+        <span class="media-tag" id="song-modal-title-tag">Tema</span>
+        <h2 id="song-modal-title"></h2>
+      </div>
+      <div class="embed-frame song-modal-embed" id="song-modal-embed"></div>
+      <pre class="song-lyrics song-modal-lyrics" id="song-modal-lyrics"></pre>
+    </div>
+  </dialog>
+
   <script src="script.js"></script>
 </body>
 </html>

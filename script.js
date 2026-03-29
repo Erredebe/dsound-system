@@ -1,4 +1,60 @@
 const navLinks = document.querySelectorAll('.site-nav a');
+const songModal = document.getElementById('song-modal');
+const songModalTitleTag = document.getElementById('song-modal-title-tag');
+const songModalTitle = document.getElementById('song-modal-title');
+const songModalEmbed = document.getElementById('song-modal-embed');
+const songModalLyrics = document.getElementById('song-modal-lyrics');
+
+const createSongIframe = (song) => {
+  const iframe = document.createElement('iframe');
+  iframe.width = '100%';
+  iframe.height = '140';
+  iframe.style.borderRadius = '12px';
+  iframe.style.border = '0';
+  iframe.allowFullscreen = true;
+  iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+  iframe.loading = 'lazy';
+  iframe.src = song.embedUrl;
+  iframe.title = `${song.title} by Dsound-System`;
+  return iframe;
+};
+
+const openSongModal = (song) => {
+  if (!songModal) {
+    return;
+  }
+
+  document.body.classList.add('modal-open');
+  songModalTitleTag.textContent = 'Tema';
+  songModalTitle.textContent = song.title;
+  songModalEmbed.replaceChildren(createSongIframe(song));
+  songModalLyrics.textContent = song.lyrics;
+  songModal.showModal();
+};
+
+const setupSongModal = () => {
+  if (!songModal) {
+    return;
+  }
+
+  songModal.addEventListener('click', (event) => {
+    const bounds = songModal.getBoundingClientRect();
+    const isBackdropClick =
+      event.clientX < bounds.left ||
+      event.clientX > bounds.right ||
+      event.clientY < bounds.top ||
+      event.clientY > bounds.bottom;
+
+    if (isBackdropClick) {
+      songModal.close();
+    }
+  });
+
+  songModal.addEventListener('close', () => {
+    document.body.classList.remove('modal-open');
+    songModalEmbed.replaceChildren();
+  });
+};
 
 const setupRevealAnimations = () => {
   const revealItems = document.querySelectorAll('.reveal');
@@ -57,19 +113,7 @@ const createSongCard = (song, index) => {
 
   const embedFrame = document.createElement('div');
   embedFrame.className = 'embed-frame';
-
-  const iframe = document.createElement('iframe');
-  iframe.width = '100%';
-  iframe.height = '140';
-  iframe.style.borderRadius = '12px';
-  iframe.style.border = '0';
-  iframe.allowFullscreen = true;
-  iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
-  iframe.loading = 'lazy';
-  iframe.src = song.embedUrl;
-  iframe.title = `${song.title} by Dsound-System`;
-
-  embedFrame.appendChild(iframe);
+  embedFrame.appendChild(createSongIframe(song));
 
   top.append(titleTag, embedFrame);
   article.appendChild(top);
@@ -78,20 +122,13 @@ const createSongCard = (song, index) => {
     const toggle = document.createElement('button');
     toggle.className = 'button button-secondary lyrics-toggle';
     toggle.type = 'button';
-    toggle.textContent = 'Ver letra';
-
-    const lyrics = document.createElement('pre');
-    lyrics.className = 'song-lyrics';
-    lyrics.hidden = true;
-    lyrics.textContent = song.lyrics;
+    toggle.textContent = 'Ver mas';
 
     toggle.addEventListener('click', () => {
-      const isHidden = lyrics.hidden;
-      lyrics.hidden = !isHidden;
-      toggle.textContent = isHidden ? 'Ocultar letra' : 'Ver letra';
+      openSongModal(song);
     });
 
-    article.append(toggle, lyrics);
+    article.appendChild(toggle);
   }
 
   return article;
@@ -138,6 +175,7 @@ const init = async () => {
     populatePage(data);
     setupRevealAnimations();
     setupActiveNav();
+    setupSongModal();
   } catch (error) {
     console.error(error);
     const songsGrid = document.getElementById('songs-grid');
