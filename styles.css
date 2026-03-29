@@ -874,13 +874,22 @@ p {
 }
 
 .song-card-title {
+  display: inline-block;
+  align-self: start;
+  max-width: 100%;
   margin-top: 0;
   margin-bottom: 0;
-  width: fit-content;
+  padding: 0.55rem 0.9rem;
+  border-radius: 18px;
+  white-space: normal;
+  line-height: 1.15;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .song-detail-sidebar .song-card-title {
   font-size: 1rem;
+  max-width: 100%;
 }
 
 .lyrics-heading {
@@ -1232,7 +1241,8 @@ p {
   }
 
   .song-card-title {
-    font-size: 1.95rem;
+    font-size: 0.86rem;
+    width: 100%;
   }
 
   .song-nav {
