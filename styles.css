@@ -748,6 +748,51 @@ p {
   font-size: 0.78rem;
 }
 
+.song-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.song-nav-link {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(239, 201, 142, 0.14);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.song-nav-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 201, 142, 0.34);
+  background: rgba(239, 201, 142, 0.08);
+}
+
+.song-nav-link-next {
+  text-align: right;
+}
+
+.song-nav-eyebrow {
+  color: var(--accent-soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.song-nav-title {
+  color: var(--text);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.08rem;
+  line-height: 1;
+  text-wrap: balance;
+}
+
 .song-lyrics {
   margin: 0;
   padding: 1.2rem 1.25rem;
@@ -1006,6 +1051,14 @@ p {
 
   .song-card-title {
     font-size: 1.95rem;
+  }
+
+  .song-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .song-nav-link-next {
+    text-align: left;
   }
 
   .song-card-detail {

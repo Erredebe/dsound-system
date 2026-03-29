@@ -162,6 +162,36 @@ const createSongIframe = (song) => {
   return iframe;
 };
 
+const createSongNavigator = (previousSong, nextSong) => {
+  const nav = document.createElement('nav');
+  nav.className = 'song-nav';
+  nav.setAttribute('aria-label', 'Navegacion entre canciones');
+
+  const createNavLink = (song, direction, fallbackLabel) => {
+    const link = document.createElement('a');
+    link.className = `song-nav-link song-nav-link-${direction}`;
+    link.href = getSongPageUrl(song.slug);
+
+    const eyebrow = document.createElement('span');
+    eyebrow.className = 'song-nav-eyebrow';
+    eyebrow.textContent = fallbackLabel;
+
+    const title = document.createElement('span');
+    title.className = 'song-nav-title';
+    title.textContent = song.title;
+
+    link.append(eyebrow, title);
+    return link;
+  };
+
+  nav.append(
+    createNavLink(previousSong, 'previous', 'Anterior'),
+    createNavLink(nextSong, 'next', 'Siguiente')
+  );
+
+  return nav;
+};
+
 const setupRevealAnimations = () => {
   const revealItems = document.querySelectorAll('.reveal');
 
@@ -250,7 +280,7 @@ const setupSongsMenu = () => {
 };
 
 const createSongCard = (song, index, options = {}) => {
-  const { selectedSlug = '', isolated = false, totalSongs = 0 } = options;
+  const { selectedSlug = '', isolated = false, totalSongs = 0, previousSong = null, nextSong = null } = options;
   const article = document.createElement('article');
   const delayClass = index === 0 ? '' : ` delay-${Math.min(index, 2)}`;
   article.className = `embed-card song-card reveal${delayClass}${isolated ? ' song-card-detail' : ''}`;
@@ -284,6 +314,10 @@ const createSongCard = (song, index, options = {}) => {
       iconOnly: true,
     })
   );
+
+  if (isolated && previousSong && nextSong) {
+    shell.appendChild(createSongNavigator(previousSong, nextSong));
+  }
 
   if (song.lyrics) {
     const lyrics = document.createElement('pre');
@@ -405,11 +439,17 @@ const populateSongPage = (data, songs) => {
     ?.setAttribute('content', `${selectedSong.title}. ${data.music.intro}`);
 
   const songsGrid = document.getElementById('songs-grid');
+  const selectedIndex = songs.indexOf(selectedSong);
+  const previousSong = songs[(selectedIndex - 1 + songs.length) % songs.length];
+  const nextSong = songs[(selectedIndex + 1) % songs.length];
+
   songsGrid.replaceChildren(
-    createSongCard(selectedSong, songs.indexOf(selectedSong), {
+    createSongCard(selectedSong, selectedIndex, {
       selectedSlug: selectedSong.slug,
       isolated: true,
       totalSongs: songs.length,
+      previousSong,
+      nextSong,
     })
   );
   renderMenuLinks(songs, selectedSong.slug);
