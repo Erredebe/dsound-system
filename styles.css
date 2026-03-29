@@ -725,22 +725,9 @@ p {
 }
 
 .song-card-title {
+  margin-top: 0;
   margin-bottom: 0;
-  font-size: clamp(1.65rem, 3.2vw, 2.45rem);
-  line-height: 0.96;
-}
-
-.song-card-deck {
-  max-width: 58ch;
-  margin-bottom: 0;
-}
-
-.song-card-meta {
-  margin-top: 0.1rem;
-}
-
-.song-card-meta .hero-meta-pill {
-  font-size: 0.74rem;
+  width: fit-content;
 }
 
 .lyrics-heading {

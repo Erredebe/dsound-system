@@ -162,13 +162,6 @@ const createSongIframe = (song) => {
   return iframe;
 };
 
-const createMetaPill = (text) => {
-  const pill = document.createElement('span');
-  pill.className = 'hero-meta-pill';
-  pill.textContent = text;
-  return pill;
-};
-
 const setupRevealAnimations = () => {
   const revealItems = document.querySelectorAll('.reveal');
 
@@ -273,33 +266,15 @@ const createSongCard = (song, index, options = {}) => {
   const top = document.createElement('div');
   top.className = 'song-top';
 
-  const titleTag = document.createElement('span');
-  titleTag.className = 'media-tag';
-  titleTag.textContent = isolated ? 'Single' : `Track ${String(index + 1).padStart(2, '0')}`;
-
-  const title = document.createElement('h3');
-  title.className = 'song-card-title';
+  const title = document.createElement('p');
+  title.className = 'song-card-title media-tag';
   title.textContent = song.title;
-
-  const deck = document.createElement('p');
-  deck.className = 'song-card-deck';
-  deck.textContent = isolated
-    ? 'Pagina propia para escuchar el tema completo, leer la letra y compartirlo como single independiente.'
-    : 'Single del catalogo de Dsound-System con enlace propio para escucha y distribucion.';
-
-  const meta = document.createElement('div');
-  meta.className = 'card-meta song-card-meta';
-  meta.append(
-    createMetaPill('DS Sound Dub'),
-    createMetaPill(totalSongs ? `Catalogo ${String(index + 1).padStart(2, '0')}/${String(totalSongs).padStart(2, '0')}` : 'Catalogo'),
-    createMetaPill(isolated ? 'Pagina individual' : 'Escucha + comparte')
-  );
 
   const embedFrame = document.createElement('div');
   embedFrame.className = 'embed-frame';
   embedFrame.appendChild(createSongIframe(song));
 
-  top.append(titleTag, title, deck, meta, embedFrame);
+  top.append(title, embedFrame);
   shell.appendChild(top);
   shell.appendChild(
     createShareBlock({
@@ -392,11 +367,7 @@ const populateIndexPage = (data, songs) => {
   document.getElementById('hero-eyebrow').textContent = data.hero.eyebrow;
   document.getElementById('hero-title').textContent = data.hero.title;
   document.getElementById('hero-text').textContent = data.hero.text;
-  heroMeta?.replaceChildren(
-    createMetaPill('Fictional Dub Collective'),
-    createMetaPill(`${songs.length} singles disponibles`),
-    createMetaPill('Catalogo con paginas propias')
-  );
+  heroMeta?.replaceChildren();
 
   const primaryCta = document.getElementById('hero-primary-cta');
   primaryCta.textContent = data.hero.primaryCta.label;
@@ -413,10 +384,10 @@ const populateIndexPage = (data, songs) => {
 
   document.getElementById('music-eyebrow').textContent = data.music.eyebrow;
   if (musicTitle) {
-    musicTitle.textContent = data.music.title;
+    musicTitle.textContent = '';
   }
   if (musicIntro) {
-    musicIntro.textContent = data.music.intro;
+    musicIntro.textContent = '';
   }
 
   const songsGrid = document.getElementById('songs-grid');
@@ -435,13 +406,8 @@ const populateSongPage = (data, songs) => {
 
   document.getElementById('hero-eyebrow').textContent = data.music.eyebrow;
   document.getElementById('hero-title').textContent = selectedSong.title;
-  document.getElementById('hero-text').textContent =
-    'Una pagina de single pensada para escuchar el tema con contexto, letra y enlace propio dentro del catalogo de Dsound-System.';
-  heroMeta?.replaceChildren(
-    createMetaPill('Single page'),
-    createMetaPill(`Tema ${String(songs.indexOf(selectedSong) + 1).padStart(2, '0')} del catalogo`),
-    createMetaPill('Dub satirico con enlace propio')
-  );
+  document.getElementById('hero-text').textContent = '';
+  heroMeta?.replaceChildren();
 
   const primaryCta = document.getElementById('hero-primary-cta');
   primaryCta.textContent = 'Ver discografia';
@@ -458,10 +424,10 @@ const populateSongPage = (data, songs) => {
 
   document.getElementById('music-eyebrow').textContent = 'Single';
   if (musicTitle) {
-    musicTitle.textContent = 'Escucha completa y letra';
+    musicTitle.textContent = '';
   }
   if (musicIntro) {
-    musicIntro.textContent = 'La pieza se presenta en formato individual para que funcione como lanzamiento, no solo como item dentro de una parrilla.';
+    musicIntro.textContent = '';
   }
 
   const songsGrid = document.getElementById('songs-grid');
