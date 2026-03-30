@@ -149,7 +149,8 @@ const openSongsMenu = () => {
   songsMenu.classList.add('is-open');
 };
 
-const createSongIframe = (song) => {
+const createSongIframe = (song, options = {}) => {
+  const { autoplay = false } = options;
   const iframe = document.createElement('iframe');
   iframe.width = '100%';
   iframe.height = '140';
@@ -157,7 +158,13 @@ const createSongIframe = (song) => {
   iframe.style.border = '0';
   iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
   iframe.loading = 'lazy';
-  iframe.src = song.embedUrl;
+  const iframeUrl = new URL(song.embedUrl);
+
+  if (autoplay) {
+    iframeUrl.searchParams.set('autoplay', '1');
+  }
+
+  iframe.src = iframeUrl.toString();
   iframe.title = `${song.title} by Dsound-System`;
   return iframe;
 };
@@ -353,7 +360,7 @@ const createSongCard = (song, index, options = {}) => {
 
   const embedFrame = document.createElement('div');
   embedFrame.className = 'embed-frame';
-  embedFrame.appendChild(createSongIframe(song));
+  embedFrame.appendChild(createSongIframe(song, { autoplay: isolated }));
 
   const shareBlock = createShareBlock({
     title: `${song.title} | Dsound-System`,
