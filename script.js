@@ -169,6 +169,71 @@ const createSongIframe = (song, options = {}) => {
   return iframe;
 };
 
+const mountDeferredSongIframe = (embedFrame) => {
+  if (!embedFrame || embedFrame.dataset.embedLoaded === 'true') {
+    return;
+  }
+
+  const embedUrl = embedFrame.dataset.embedUrl;
+  const title = embedFrame.dataset.songTitle || 'Dsound-System';
+
+  if (!embedUrl) {
+    return;
+  }
+
+  embedFrame.dataset.embedLoaded = 'true';
+  embedFrame.classList.add('is-loading');
+
+  const iframe = createSongIframe({ title, embedUrl });
+  iframe.addEventListener(
+    'load',
+    () => {
+      embedFrame.classList.remove('is-loading');
+    },
+    { once: true }
+  );
+
+  embedFrame.replaceChildren(iframe);
+  embedFrame.classList.remove('embed-frame-deferred');
+};
+
+const createDeferredSongEmbed = (song) => {
+  const embedFrame = document.createElement('div');
+  embedFrame.className = 'embed-frame embed-frame-deferred';
+  embedFrame.dataset.embedUrl = song.embedUrl;
+  embedFrame.dataset.songTitle = song.title;
+  embedFrame.dataset.embedLoaded = 'false';
+
+  const placeholder = document.createElement('div');
+  placeholder.className = 'embed-frame-placeholder';
+
+  const hint = document.createElement('p');
+  hint.className = 'embed-frame-hint';
+  hint.textContent = 'El reproductor se carga al entrar en pantalla para no sobrecargar la pagina.';
+
+  const actions = document.createElement('div');
+  actions.className = 'embed-frame-actions';
+
+  const loadButton = document.createElement('button');
+  loadButton.className = 'button button-secondary song-embed-load';
+  loadButton.type = 'button';
+  loadButton.textContent = 'Cargar reproductor';
+  loadButton.addEventListener('click', () => {
+    mountDeferredSongIframe(embedFrame);
+  });
+
+  const openSongLink = document.createElement('a');
+  openSongLink.className = 'button button-secondary song-embed-open';
+  openSongLink.href = getSongPageUrl(song.slug);
+  openSongLink.textContent = 'Abrir single';
+
+  actions.append(loadButton, openSongLink);
+  placeholder.append(hint, actions);
+  embedFrame.appendChild(placeholder);
+
+  return embedFrame;
+};
+
 const createSongNavigator = (previousSong, nextSong) => {
   const nav = document.createElement('nav');
   nav.className = 'song-nav';
@@ -286,51 +351,49 @@ const setupSongsMenu = () => {
   });
 };
 
-const setupParallaxEffects = () => {
-  const root = document.documentElement;
-  const hero = document.querySelector('.hero');
-  const heroImageFrame = document.querySelector('.hero-image-frame');
-  let ticking = false;
-
-  const updateScrollEffects = () => {
-    ticking = false;
-
-    const scrollY = window.scrollY;
-    const heroHeight = hero ? Math.max(hero.offsetHeight, 1) : window.innerHeight;
-    const progress = Math.min(scrollY / heroHeight, 1.2);
-
-    root.style.setProperty('--scroll-y', `${scrollY}`);
-    root.style.setProperty('--hero-progress', progress.toFixed(3));
-    document.body.classList.toggle('is-scrolled', scrollY > 16);
-  };
-
-  const requestTick = () => {
-    if (ticking) {
-      return;
-    }
-
-    ticking = true;
-    window.requestAnimationFrame(updateScrollEffects);
-  };
-
-  updateScrollEffects();
-  window.addEventListener('scroll', requestTick, { passive: true });
-
-  if (!heroImageFrame || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+const setupDeferredSongEmbeds = () => {
+  if (pageMode !== 'index') {
     return;
   }
 
-  window.addEventListener(
-    'mousemove',
-    (event) => {
-      const x = (event.clientX / window.innerWidth - 0.5) * 2;
-      const y = (event.clientY / window.innerHeight - 0.5) * 2;
+  const deferredEmbeds = [...document.querySelectorAll('.embed-frame-deferred')];
 
-      root.style.setProperty('--pointer-x', x.toFixed(3));
-      root.style.setProperty('--pointer-y', y.toFixed(3));
+  if (!deferredEmbeds.length) {
+    return;
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    deferredEmbeds.forEach((embedFrame) => mountDeferredSongIframe(embedFrame));
+    return;
+  }
+
+  const embedObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        mountDeferredSongIframe(entry.target);
+        embedObserver.unobserve(entry.target);
+      });
     },
-    { passive: true }
+    {
+      rootMargin: '0px',
+      threshold: 0.2,
+    }
   );
+
+  deferredEmbeds.forEach((embedFrame) => embedObserver.observe(embedFrame));
+};
+
+const setupParallaxEffects = () => {
+  const updateScrolledState = () => {
+    document.body.classList.toggle('is-scrolled', window.scrollY > 16);
+  };
+
+  updateScrolledState();
+  window.addEventListener('scroll', updateScrolledState, { passive: true });
 };
 
 const createSongCard = (song, index, options = {}) => {
@@ -358,9 +421,14 @@ const createSongCard = (song, index, options = {}) => {
   title.className = 'song-card-title media-tag';
   title.textContent = song.title;
 
-  const embedFrame = document.createElement('div');
-  embedFrame.className = 'embed-frame';
-  embedFrame.appendChild(createSongIframe(song, { autoplay: isolated }));
+  const embedFrame = isolated
+    ? document.createElement('div')
+    : createDeferredSongEmbed(song);
+
+  if (isolated) {
+    embedFrame.className = 'embed-frame';
+    embedFrame.appendChild(createSongIframe(song, { autoplay: isolated }));
+  }
 
   const shareBlock = createShareBlock({
     title: `${song.title} | Dsound-System`,
@@ -563,6 +631,7 @@ const init = async () => {
 
     const data = await response.json();
     populatePage(data);
+    setupDeferredSongEmbeds();
     setupRevealAnimations();
     setupActiveNav();
     setupSongsMenu();
